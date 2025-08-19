@@ -5,6 +5,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Player/AuraPlayerState.h"
 #include "AbilitySystemComponent.h"
+#include "Player/AuraPlayerController.h"
+#include "UI/HUD/AuraHUD.h"
 
 AAuraCharacter::AAuraCharacter()
 {
@@ -15,7 +17,7 @@ AAuraCharacter::AAuraCharacter()
 
     bUseControllerRotationYaw = false; // Disable controller rotation yaw to allow character movement to control rotation
     bUseControllerRotationPitch = false; // Disable controller rotation pitch
-    bUseControllerRotationRoll = false; // Disable controller rotation roll
+    bUseControllerRotationRoll = false; // Disable controller rotation roll 
 }
 
 void AAuraCharacter::PossessedBy(AController* NewController)
@@ -41,4 +43,12 @@ void AAuraCharacter::InitAbilityActorInfo()
 	AuraPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(AuraPlayerState, this);
 	AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();
 	AttributeSet = AuraPlayerState->GetAttributeSet();
+
+	if(AAuraPlayerController* AAuraPlayerControler = Cast<AAuraPlayerController>(GetController()))
+	{
+		if(AAuraHUD* AuraHUD = Cast<AAuraHUD>(AAuraPlayerControler->GetHUD()))
+		{
+			AuraHUD->InitOverlay(AAuraPlayerControler, AuraPlayerState, AbilitySystemComponent, AttributeSet);
+		}
+	}
 }
